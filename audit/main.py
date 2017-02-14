@@ -445,11 +445,11 @@ def main(argv=None):
         else: exit_prompt('Error: Option {} not recognised'.format(opt))
 
     # Check file locations
-    if input_folder != '' and not os.path.exists(output_folder):
+    if input_folder != '' and not os.path.isdir(input_folder):
         exit_prompt('Error: Could not locate folder for input files')
     if output_folder != '':
         try:
-            if not os.path.exists(output_folder):
+            if not os.path.isdir(output_folder):
                 os.makedirs(output_folder)
         except os.error: exit_prompt('Error: Could not create folder for output files')
 
