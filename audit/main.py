@@ -48,16 +48,16 @@ EXCLUSIONS = {
                                         '928/SID, 949/FFP, 952/UNO, 985 $a LDLSCP or ELECTRONIC'],
 }
 
-LEADER_VALIDATION = [], [], [], [], \
-                    ['a', 'c', 'd', 'n', 'p'],\
-                    ['a', 'c', 'd', 'e', 'f', 'g', 'i', 'j', 'k', 'm', 'o', 'p', 'r', 't'],\
-                    ['a', 'b', 'c', 'd', 'i', 'm', 's'],\
-                    [' ', 'a'],\
-                    [' ', 'a'],\
-                    [], [], [], [], [], [], [],\
-                    [' ', '1', '2', '3', '4', '5', '6', '7', '8', 'u', 'z'],\
-                    [' ', 'a', 'c', 'i', 'n', 'u'],\
-                    [' ', 'a', 'b', 'c'],\
+LEADER_VALIDATION = [[], [], [], [], [],
+                     ['a', 'c', 'd', 'n', 'p'],
+                     ['a', 'c', 'd', 'e', 'f', 'g', 'i', 'j', 'k', 'm', 'o', 'p', 'r', 't'],
+                     ['a', 'b', 'c', 'd', 'i', 'm', 's'],
+                     [' ', 'a'],
+                     [' ', 'a'],
+                     [], [], [], [], [], [], [],
+                     [' ', '1', '2', '3', '4', '5', '6', '7', '8', 'u', 'z'],
+                     [' ', 'a', 'c', 'i', 'n', 'u'],
+                     [' ', 'a', 'b', 'c']]
 
 
 # ====================
@@ -515,8 +515,8 @@ def main(argv=None):
                 print('\r{0} MARC records processed'.format(str(record_count)), end='\r')
 
                 # LEADER (for validation only)
-                for i in LEADER_VALIDATION:
-                    if len(record.leader) >= i and record.leader[i] not in LEADER_VALIDATION[i]:
+                for i, v in enumerate(LEADER_VALIDATION):
+                    if v != [] and len(record.leader) >= i and record.leader[i] not in v:
                         error_file.write('Record {} has invalid LDR position {}: {}\n'.format(
                             record.ID, str(i), record.leader[i]))
 
