@@ -669,7 +669,7 @@ def main(argv=None):
                     record.exclude = True
                     stats.exclusions['930_SRC_lds'].add(record.ID)
 
-                if record.leader[7] != '5' \
+                if record.leader[17] != '5' \
                    and not any(q for q in [record.q['985a'], record.q['Subjects']]) \
                    and not any(f in record for f in ['082', '852', '913', 'FIN', '922', 'LKR', '928', 'SID',
                                                      '949', 'FFP', '952', 'UNO']):
