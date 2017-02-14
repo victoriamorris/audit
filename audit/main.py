@@ -401,9 +401,13 @@ def usage():
     print('Correct syntax is:')
     print('audit [OPTIONS]')
     print('\nOptions:')
-    print('    -c       INPUT_FOLDER - Path to folder containing input files.')
+    print('    -i       INPUT_FOLDER - Path to folder containing input files.')
     print('    -o       OUTPUT_FOLDER - Path to folder to save output files.')
+    print('    --debug  Debug mode.')
     print('    --help   Display this help message and exit.')
+    print('\nIf INPUT_FOLDER is not set, files to be audited are assumed to be present in the current folder.')
+    print('If OUTPUT_FOLDER is not set, output files are created in the current folder.')
+    print('Files to be audited must have named of the form full*.lex, where * is a number.')
     exit_prompt()
 
 # ====================
