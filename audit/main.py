@@ -709,8 +709,6 @@ def main(argv=None):
 
     # Create union of all exclusion categories
     exclusions = list(set().union(*stats.exclusions.values()))
-    # stats.exclusions['STA_FFP'], stats.exclusions['979'], stats.exclusions['930_SRC_dss'],
-    # stats.exclusions['930_SRC_mop'], stats.exclusions['930_SRC_lds'], stats.exclusions['other']))
 
     for e in EXCLUSIONS:
         ofile = open(os.path.join(output_folder, 'Exclusions - {} - {} records.txt'.format(EXCLUSIONS[e][0], str(len(stats.exclusions[e])))),
