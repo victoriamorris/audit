@@ -511,7 +511,7 @@ def main(argv=None):
 
             if record.ID != '':
                 record_count += 1
-                if debug and record_count > 1000: break
+                if debug and record_count > 10000: break
                 print('\r{0} MARC records processed'.format(str(record_count)), end='\r')
 
                 # LEADER (for validation only)
@@ -566,8 +566,10 @@ def main(argv=None):
                         record.q['pub_country'] = False
 
                 # 245 $h
-                record.q['245h'] = any('ELECTRONIC RESOURCE' in subfield.upper()
-                                       for subfield in field.get_subfields('h') for field in record.get_fields('245'))
+                for field in record.get_fields('245'):
+                    for subfield in field.get_subfields('h'):
+                        if 'ELECTRONIC RESOURCE' in subfield.upper():
+                            record.q['245h'] = True
 
                 # 337 $a
                 # Media type
@@ -576,8 +578,10 @@ def main(argv=None):
                         record.MT.add(subfield.lower())
 
                 # 538 $a
-                record.q['538a'] = any('INTERNET' in subfield.upper() for subfield in field.get_subfields('a')
-                                       for field in record.get_fields('538'))
+                for field in record.get_fields('538'):
+                    for subfield in field.get_subfields('a'):
+                        if 'INTERNET' in subfield.upper():
+                            record.q['538a'] = True
 
                 # 600-662
                 # Subjects
@@ -586,9 +590,12 @@ def main(argv=None):
 
                 # 852
                 # Shelfmark
-                record.q['852j'] = any('j' in field for field in record.get_fields('852'))
-                record.q['852b'] = any( any(s in subfield.upper() for s in ['HMNTS', 'MAPS', 'MUSIC', 'NPL', 'OC', 'STI'])
-                                        for subfield in field.get_subfields('b') for field in record.get_fields('852'))
+                for field in record.get_fields('852'):
+                    for subfield in field.get_subfields('b'):
+                        if any(s in subfield.upper() for s in ['HMNTS', 'MAPS', 'MUSIC', 'NPL', 'OC', 'STI']):
+                            record.q['852b'] = True
+                    if 'j' in field:
+                        record.q['852j'] = True
 
                 # 914, FMT
                 # Format
@@ -607,37 +614,48 @@ def main(argv=None):
 
                 # 922, LKR
                 # Link
-                record.q['LKR'] = any('ANA' in subfield.upper() for subfield in field.get_subfields('a')
-                                      for field in record.get_fields('922', 'LKR'))
+                for field in record.get_fields('922', 'LKR'):
+                    for subfield in field.get_subfields('a'):
+                        if 'ANA' in subfield.upper():
+                            record.q['LKR'] = True
 
                 # 930, SRC
                 # Source
-                record.q['930_SRC_mop'] = any('MOP' in subfield.upper() for subfield in field.get_subfields('a')
-                                              for field in record.get_fields('930', 'SRC'))
-                record.q['930_SRC_lds'] = any('LDS' in subfield.upper() for subfield in field.get_subfields('a')
-                                              for field in record.get_fields('930', 'SRC'))
-                record.q['930_SRC_dss'] = any( any(s in subfield.upper() for s in ['DSS02', 'DSS03', 'DSS04'])
-                                               for subfield in field.get_subfields('a')
-                                               for field in record.get_fields('930', 'SRC'))
+                for field in record.get_fields('930', 'SRC'):
+                    for subfield in field.get_subfields('a'):
+                        if any(s in subfield.upper() for s in ['DSS02', 'DSS03', 'DSS04']):
+                            record.q['930_SRC_dss'] = True
+                        if 'MOP' in subfield.upper():
+                            record.q['930_SRC_mop'] = True
+                        if 'LDS' in subfield.upper():
+                            record.q['930_SRC_lds'] = True
 
                 # 932, STA
                 # Status
-                record.q['STA'] = any('SUPPRESSED' in subfield.upper() for subfield in field.get_subfields('a')
-                                      for field in record.get_fields('932', 'STA'))
+                for field in record.get_fields('932', 'STA'):
+                    for subfield in field.get_subfields('a'):
+                        if 'SUPPRESSED' in subfield.upper():
+                            record.q['STA'] = True
 
                 # 949, FFP
                 # Flag For Publication
-                record.q['FFP'] = any('Y' in subfield.upper() for subfield in field.get_subfields('a')
-                                      for field in record.get_fields('949', 'FFP'))
+                for field in record.get_fields('949', 'FFP'):
+                    for subfield in field.get_subfields('a'):
+                        if 'Y' in subfield.upper():
+                            record.q['FFP'] = True
 
                 # 985
-                record.q['985a'] = any( any(s in subfield.upper() for s in ['LDLSCP', 'ELECTRONIC'])
-                                        for subfield in field.get_subfields('a') for field in record.get_fields('985'))
+                for field in record.get_fields('985'):
+                    for subfield in field.get_subfields('a'):
+                        if any(s in subfield.upper() for s in ['LDLSCP', 'ELECTRONIC']):
+                            record.q['985a'] = True
 
                 # 979
                 # Negative shelfmark
-                record.q['979j'] = any('N' in subfield.upper() for subfield in field.get_subfields('j')
-                                       for field in record.get_fields('979'))
+                for field in record.get_fields('979'):
+                    for subfield in field.get_subfields('j'):
+                        if 'N' in subfield.upper():
+                            record.q['979j'] = True
 
                 if record.q['STA'] and not record.q['FFP']:
                     record.exclude = True
@@ -645,7 +663,7 @@ def main(argv=None):
 
                 if record.q['979j'] \
                    and not any(q for q in [record.q['245h'], record.q['538a'], record.q['852b'], record.q['LKR'],
-                                           record.q['Subjects'], ]) \
+                                           record.q['Subjects']]) \
                    and not any(f in record for f in ['082', '949', 'FFP', '952', 'UNO']):
                     record.exclude = True
                     stats.exclusions['979'].add(record.ID)
@@ -658,7 +676,7 @@ def main(argv=None):
                     stats.exclusions['930_SRC_dss'].add(record.ID)
 
                 if record.q['930_SRC_mop'] \
-                   and not any(q for q in [record.q['852j'], ]) \
+                   and not any(q for q in [record.q['852j'], record.q['Subjects']]) \
                    and not any(f in record for f in ['082', '920', 'LEO']):
                     record.exclude = True
                     stats.exclusions['930_SRC_mop'].add(record.ID)
