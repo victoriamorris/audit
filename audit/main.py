@@ -517,8 +517,8 @@ def main(argv=None):
                 # LEADER (for validation only)
                 for i, v in enumerate(LEADER_VALIDATION):
                     if v != [] and len(record.leader) >= i and record.leader[i] not in v:
-                        error_file.write('Record {} has invalid LDR position {}: {}\n'.format(
-                            record.ID, str(i), record.leader[i]))
+                        error_file.write('Record {} has invalid LDR position {}: {}.\tSource is: {}\n'.format(
+                            record.ID, str(i), record.leader[i], str(record['040'])))
 
                 # 008
                 # Date entered on file
@@ -541,11 +541,11 @@ def main(argv=None):
                             if 'u' in record.pub_year or record.pub_year in ['0000', '9999']:
                                 record.pub_year = 'Other'
                             elif int(record.pub_year) > 2020:
-                                error_file.write('Record with strange year of publication: {} ({})'.format(
-                                    record.ID, record.pub_year))
+                                error_file.write('Record with strange year of publication: {} ({}).\tSource is: {}\n'.format(
+                                    record.ID, record.pub_year, str(record['040'])))
                             elif int(record.pub_year) < 1000:
-                                error_file.write('Record with strangely early year of publication: {} ({})'.format(
-                                    record.ID, record.pub_year))
+                                error_file.write('Record with strangely early year of publication: {} ({}).\tSource is: {}\n'.format(
+                                    record.ID, record.pub_year, str(record['040'])))
                         else:
                             record.pub_year = 'None'
                             record.q['pub_year'] = False
